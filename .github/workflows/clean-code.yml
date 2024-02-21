@@ -1,0 +1,35 @@
+name: Clean Code (Format & Lint)
+
+on:
+  pull_request:
+    branches: [main]
+
+jobs:
+  clean-code:
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v3
+
+      - name: Node.js Setup
+        uses: actions/setup-node@v3
+        with:
+          node-version: "19"
+
+      - name: Install pnpm
+        run: npm install -g pnpm
+
+      - name: Dependencies
+        run: pnpm install
+
+      - name: Code formatting
+        run: pnpm format:check
+
+      - name: create env file
+        run: |
+          touch .env
+          echo DATABASE_URL='postgres://postgres.hmilbxqgezmcozlwwact:a5fsimjlurxmsojB@aws-0-eu-central-1.pooler.supabase.com:6543/postgres' >> .env
+          echo NEXTAUTH_URL='http://localhost:3000' >> .env
+
+      - name: Run Linter
+        run: pnpm lint
